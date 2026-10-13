@@ -1,8 +1,8 @@
 # Why there is no front end
 
-Brightflag is a database with a subscription. The tables underneath it are ordinary: a few entities, a few relationships, a handful of workflows you repeat every week. What you pay for is the layer on top that lets people who do not write SQL get at those tables. Screens, filters, dashboards, forms.
+Underneath Brightflag's screens sit ordinary records: firms, rates, matters, invoices, line items and accruals, and a handful of workflows you repeat every week. What you pay for is the layer on top that lets people who do not write SQL get at those tables. Screens, filters, dashboards, forms.
 
-That layer used to be the whole product, because talking to a database was hard. It is not hard any more. Open this folder in Claude Code, describe what you want, and it writes the query, runs it, and explains the answer. Ask a question the dashboard never had a chart for and you still get an answer.
+That layer used to be the whole product, because talking to a database was hard. It is not hard any more. Open this folder in Claude Code, describe what you want, and it writes the query, runs it, and explains the answer. Ask a question no standard report covers and you still get an answer.
 
 ## What you gain
 
@@ -15,10 +15,12 @@ That layer used to be the whole product, because talking to a database was hard.
 
 - **A visual board.** Stages are a table you ask about, not cards you drag.
 - **A phone app.** It runs where Claude Code runs.
+- **A portal for firms.** Brightflag gives firms a place to submit invoices and reads PDF invoices. Here, firms send LEDES files and someone loads them. Enterprise DNA can build a submission portal or PDF reading into your version.
+- **Brightflag's own analysis.** Its benchmarking and automated features (work classification, invoice summaries, spend forecasts) stay with Brightflag.
 - **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.
 
 ## Who this fits
 
-Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your team needs a screen to look at all day, keep Brightflag. If you need the answers more than the screens, this is cheaper, faster and yours.
+Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your team needs firms submitting through a portal and a screen to look at all day, keep Brightflag or have that built. If you need the answers more than the screens, this is cheaper, faster and yours.
 
 Installed and run for you: https://enterprisedna.co/omni/instead-of/brightflag

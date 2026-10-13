@@ -1,0 +1,7 @@
+{
+  "vendor": "Supplier",
+  "invoice_number": "Inv No",
+  "invoice_date": "Inv Date",
+  "total": "Amount",
+  "matter_number": "Matter"
+}

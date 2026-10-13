@@ -1,13 +1,44 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Legal Spend for Claude Code: what needs attention, rendered by npm run view",
+    "title": "Legal spend this week",
+    "subtitle": "Invoices waiting, guideline breaches and budgets. Demo data is fictional.",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Invoices to review",
+        "sql": "select name,firm,matter_number,reviewer,currency,total,flags,at_stake,days_waiting,days_to_due from invoice_queue where status in ('received','in-review') order by at_stake desc"
+      },
+      {
+        "title": "Guideline breaches with money at stake",
+        "sql": "select invoice,firm,line_no,timekeeper_name,rule,at_stake from line_flags where invoice_status in ('received','in-review') and at_stake>0 order by at_stake desc"
+      },
+      {
+        "title": "Budgets past the warning level",
+        "sql": "select name,matter_number,owner,budget,forecast,burn_pct from budget_position where status='open' and burn_pct>=(select budget_warning_pct from settings) order by burn_pct desc"
+      },
+      {
+        "title": "What needs attention",
+        "note": "Waiting invoices, missing budgets and accruals, panel appointments ending.",
+        "sql": "select issue,record from (select 'Invoice waiting over 10 days' as issue,name as record from invoice_queue where status in ('received','in-review') and days_waiting>10 union all select 'Accrual missing this month',name from accrual_status where this_month is null union all select 'Open matter without a budget',name from matters where status='open' and budget is null) x order by issue,record"
+      }
+    ]
+  },
+  {
+    "name": "panel",
+    "title": "Outside counsel panel review",
+    "subtitle": "How each firm bills against the rate card and the guidelines.",
+    "sections": [
+      {
+        "title": "Firm scorecard",
+        "sql": "select name,country,panel_status,panel_expiry,invoices,billed,approved,reduced,flags,avg_days_to_bill from firm_scorecard order by billed desc"
+      },
+      {
+        "title": "Billed rates against the card",
+        "sql": "select firm,timekeeper_name,classification,billed_rate,card_rate,hours,above_card from rate_variance order by above_card desc"
+      },
+      {
+        "title": "Record checks",
+        "sql": "select rule,record,firm,finding from compliance_findings order by rule"
       }
     ]
   }

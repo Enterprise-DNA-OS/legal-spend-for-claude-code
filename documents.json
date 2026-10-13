@@ -1,11 +1,57 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
+    "name": "invoice-review-note",
+    "title": "Invoice review note",
+    "for_each": "select id,name from invoices where status in ('received','in-review','adjusted','rejected')",
     "file": "name",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Invoice",
+        "sql": "select q.name as invoice,q.firm,q.matter_number,q.currency,q.total,q.reductions,q.status from invoice_queue q where q.id=$1",
+        "note": "Draft for the reviewing lawyer. Check each reduction against the engagement terms before it goes to the firm."
+      },
+      {
+        "title": "Reductions",
+        "sql": "select line_no,item_date,timekeeper_name,amount,reduction,reduction_reason from line_items where invoice_id=$1 and reduction>0 order by line_no"
+      },
+      {
+        "title": "Guideline checks",
+        "sql": "select line_no,timekeeper_name,rule,at_stake from line_flags where invoice_id=$1 order by line_no,rule"
+      }
+    ]
+  },
+  {
+    "name": "matter-spend-report",
+    "title": "Matter spend report",
+    "for_each": "select id,name from matters",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Budget position",
+        "sql": "select matter_number,firm,owner,fee_arrangement,budget,approved,pending,accrued,forecast,burn_pct,estimate_updated_on from budget_position where id=$1",
+        "note": "Forecast is approved plus pending invoices plus this month's accrual."
+      },
+      {
+        "title": "Invoices",
+        "sql": "select name,status,invoice_date,currency,total,approved_amount from invoices where matter_id=$1 order by invoice_date"
+      }
+    ]
+  },
+  {
+    "name": "accrual-schedule",
+    "title": "Month-end legal accrual schedule",
+    "for_each": "select date_trunc('month',current_date)::date::text as id,to_char(current_date,'YYYY-MM') as name",
+    "file": "name",
+    "sections": [
+      {
+        "title": "Accruals for finance",
+        "sql": "select name,matter_number,firm,this_month,last_month,basis from accrual_status where period=$1::date order by firm,name",
+        "note": "Estimates of work done and not yet billed, as recorded by the legal team. Blank rows still need an estimate from the firm."
+      },
+      {
+        "title": "By business unit",
+        "sql": "select coalesce(m.business_unit,'Unallocated') as business_unit,sum(a.amount) as accrued from accruals a join matters m on m.id=a.matter_id where a.period=$1::date group by 1 order by 1"
+      }
     ]
   }
 ]
